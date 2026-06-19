@@ -134,6 +134,24 @@
     .question{font-size:17px !important}
     .title{font-size:22px !important}
   }
+
+  .path-other-input{
+    width:100%;
+    box-sizing:border-box;
+    border:1px solid #dadce0;
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:15px;
+    background:#ffffff;
+    color:#171717;
+    margin-top:8px;
+    outline:none;
+    font-family:inherit;
+  }
+  .path-other-input:focus{border-color:#171717}
+  @media (max-width:640px){
+    .path-other-input{font-size:15px;padding:14px}
+  }
 </style>
 
 <div class="wrap">
@@ -156,7 +174,8 @@
           <label class="option"><input type="radio" name="path" value="인스타그램"><span>인스타그램</span></label>
           <label class="option"><input type="radio" name="path" value="네이버"><span>네이버</span></label>
           <label class="option"><input type="radio" name="path" value="홈페이지"><span>홈페이지</span></label>
-          <label class="option"><input type="radio" name="path" value="그 외"><span>그 외</span></label>
+          <label class="option" id="pathOtherOption"><input type="radio" name="path" value="그 외"><span>그 외 (직접 입력)</span></label>
+<input type="text" id="pathOtherInput" class="path-other-input" placeholder="어디서 보고 오셨나요? (예: 당근마켓, 지인 추천, 블로그 등)" maxlength="100" style="display:none">
         </div>
       </div>
 
@@ -418,4 +437,47 @@
 })();
 </script>
 
+
+<script>
+(function(){
+  const otherInput = document.getElementById('pathOtherInput');
+  if (!otherInput) return;
+
+  // Show/hide the input based on radio selection
+  document.querySelectorAll('input[name="path"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const v = (document.querySelector('input[name="path"]:checked') || {}).value || '';
+      if (v === '그 외') {
+        otherInput.style.display = 'block';
+        setTimeout(() => otherInput.focus(), 50);
+      } else {
+        otherInput.style.display = 'none';
+        otherInput.value = '';
+      }
+    });
+  });
+
+  // Patch the submit button click to combine path + other text into q1
+  // Strategy: hook the click handler BEFORE the original handler runs by listening with capture=true.
+  // We rewrite the checked radio's value temporarily so the original submit logic picks the combined value.
+  const submitBtn = document.querySelector('.submit-btn');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', () => {
+      const checked = document.querySelector('input[name="path"]:checked');
+      if (!checked) return;
+      if (checked.value === '그 외') {
+        const detail = (otherInput.value || '').trim();
+        if (detail) {
+          // Temporarily change the radio value so the original handler reads the combined value
+          checked.value = '그 외 (' + detail + ')';
+          // Restore after submit logic reads it (next tick)
+          setTimeout(() => { checked.value = '그 외'; }, 0);
+        }
+      }
+    }, true); // capture phase: runs before bubble-phase listeners that read the value
+  }
+})();
+</script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
