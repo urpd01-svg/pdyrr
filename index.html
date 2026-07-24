@@ -242,11 +242,56 @@
         <div class="small" style="margin-top:6px">jpg, png 등 이미지 파일을 첨부하실 수 있습니다.</div>
       </div>
 
+      <div class="section consent-section">
+        <div class="qno">개인정보</div>
+        <h2 class="question">개인정보 수집·이용 동의 <span style="color:#8B0304;font-size:15px;font-weight:800">(필수)</span></h2>
+
+        <div style="margin:6px 0 12px 0;padding:12px 14px;background:#fff5f5;border:1px solid #f0c9c9;border-radius:12px;font-size:14px;color:#171717;line-height:1.6;font-weight:600">
+          설문에 참여하시면 추첨을 통해 소정의 상품을 드립니다.<br>
+          상품 발송을 위한 정보 수집에 동의하십니까?
+        </div>
+
+        <div class="consent-box" style="padding:14px 16px;border:1px solid #dadce0;border-radius:12px;background:#fafafa;font-size:13px;color:#3d3d3d;line-height:1.7">
+          <div style="font-weight:800;color:#171717;margin-bottom:6px">ㅡ 개인정보 수집 및 이용 동의서</div>
+          <div style="margin-bottom:12px">
+            · 개인정보의 수집·이용 목적 : 고객만족 설문 참여 후 상품 발송<br>
+            · 수집하는 개인정보의 항목 : 이름, 전화번호<br>
+            · 개인정보의 보유·이용 기간 : 90일
+          </div>
+
+          <div style="font-weight:800;color:#171717;margin-bottom:6px">ㅡ 개인정보 제3자 제공 동의</div>
+          <div style="margin-bottom:12px">
+            · 개인정보를 제공받는 자 : 주식회사 유림에퐁당<br>
+            · 개인정보를 제공받는 자의 이용 목적 : 고객만족 설문 참여 후 상품 발송<br>
+            · 제공하는 개인정보의 항목 : 이름, 전화번호<br>
+            · 개인정보를 제공받는 자의 보유·이용 기간 : 90일
+          </div>
+
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#171717;cursor:pointer;padding:10px 12px;background:#fff;border:1px solid #dadce0;border-radius:10px">
+            <input type="checkbox" id="privacyConsent" style="width:18px;height:18px;accent-color:#8B0304;cursor:pointer">
+            <span>위 개인정보 수집·이용 및 제3자 제공에 동의합니다.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section contact-section">
+        <div class="qno">연락처</div>
+        <h2 class="question">상품 발송을 위한 연락처 <span style="color:#8B0304;font-size:15px;font-weight:800">(필수)</span></h2>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <input type="text" id="customerName" placeholder="이름 (예: 홍길동)" autocomplete="name"
+                 style="width:100%;box-sizing:border-box;height:48px;padding:0 14px;border:1px solid #dadce0;border-radius:12px;font-size:15px;background:#fff;color:#171717;font-family:inherit">
+          <input type="tel" id="customerPhone" placeholder="전화번호 (예: 010-1234-5678)" inputmode="tel" autocomplete="tel" maxlength="13"
+                 style="width:100%;box-sizing:border-box;height:48px;padding:0 14px;border:1px solid #dadce0;border-radius:12px;font-size:15px;background:#fff;color:#171717;font-family:inherit">
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:#5f6368;line-height:1.6">
+          · 입력하신 정보는 상품 발송 목적으로만 사용되며 90일 후 파기됩니다.
+        </div>
+      </div>
+
       <div class="submit-row">
         <button type="button" class="submit-btn">설문 제출하기</button>
       </div>
 
-      <div class="note">이 사이트는 퐁당샤브 율량점 전용입니다. 매장명은 코드에 박혀 있어 손님이 바꿀 수 없고, 제출 시 통합 스프레드시트의 A열에 자동으로 "퐁당샤브 율량점"이 기록됩니다.</div>
     </div>
   </div>
 </div>
@@ -267,7 +312,7 @@
     }
   });
 
-  const STAFF = ['이인영','김성현','윤가연','연소정','송채연','임장빈','변지영','타오','아잉','동','준'];
+  const STAFF = ['이인영','김성현','윤가연','변지영','타오','아잉','동','준','김나연','김태율'];
   function renderStaff(containerId, type){
     const wrap = document.getElementById(containerId);
     STAFF.forEach(name => {
@@ -310,7 +355,7 @@
 <script>
 (function(){
   const BRANCH_NAME = "퐁당샤브 율량점";
-  const APP_URL = "https://script.google.com/macros/s/AKfycbzUuzwy6yKXJUrgCw8rUumtXcmGhnRnpTqSULq9uocNQ7o4-nR-XWjKgbK03lT4WKJ4/exec";
+  const APP_URL = "https://script.google.com/macros/s/AKfycbz__6jnwBZ4J9Q9mGHbTaZ6BGtYyUAYc59zZfNpKDR3-WwQyIQa8gZ0U5fudbCegMFc/exec";
   const tasteState = {value: 0};
   const cleanState = {value: 0};
   const likeSet = new Set();
@@ -394,6 +439,32 @@
   if (submitBtn) {
     submitBtn.addEventListener('click', async () => {
       if (inflight) return;
+
+      // 개인정보 수집·이용 동의 필수 체크
+      const consentEl = document.getElementById('privacyConsent');
+      if (!consentEl || !consentEl.checked) {
+        alert('개인정보 수집·이용 및 제3자 제공에 동의해 주셔야 설문 제출이 가능합니다.');
+        if (consentEl) consentEl.focus();
+        return;
+      }
+
+      // 이름/전화번호 필수 입력 검증
+      const nameEl = document.getElementById('customerName');
+      const phoneEl = document.getElementById('customerPhone');
+      const nameVal = (nameEl.value || '').trim();
+      const phoneVal = (phoneEl.value || '').trim();
+      if (!nameVal) {
+        alert('상품 발송을 위해 이름을 입력해 주세요.');
+        nameEl.focus();
+        return;
+      }
+      const phoneDigits = phoneVal.replace(/[^0-9]/g, '');
+      if (phoneDigits.length < 9 || phoneDigits.length > 11) {
+        alert('올바른 전화번호를 입력해 주세요. (예: 010-1234-5678)');
+        phoneEl.focus();
+        return;
+      }
+
       inflight = true;
 
       const q1 = (document.querySelector('input[name="path"]:checked') || {}).value || '';
@@ -410,7 +481,10 @@
         branch: BRANCH_NAME,
         q1: q1, q2: q2, q3: q3, q4: q4,
         q5: q5, q6: q6, q7: q7, q8: q8,
-        receipt_base64: receiptDataUrl || ''
+        receipt_base64: receiptDataUrl || '',
+        privacy_consent: 'true',
+        name: (document.getElementById('customerName').value || '').trim(),
+        phone: (document.getElementById('customerPhone').value || '').trim()
       };
 
       document.body.classList.add('submitting');
@@ -477,8 +551,28 @@
     }, true); // capture phase: runs before bubble-phase listeners that read the value
   }
 })();
+
+  // 전화번호 자동 하이픈 포맷 (010-0000-0000)
+  (function(){
+    const el = document.getElementById('customerPhone');
+    if (!el) return;
+    el.addEventListener('input', function(e){
+      let v = e.target.value.replace(/[^0-9]/g, '');
+      if (v.length > 11) v = v.substring(0, 11);
+      if (v.length < 4) {
+        e.target.value = v;
+      } else if (v.length < 8) {
+        e.target.value = v.substring(0,3) + '-' + v.substring(3);
+      } else if (v.length <= 10) {
+        e.target.value = v.substring(0,3) + '-' + v.substring(3,6) + '-' + v.substring(6);
+      } else {
+        e.target.value = v.substring(0,3) + '-' + v.substring(3,7) + '-' + v.substring(7);
+      }
+    });
+  })();
 </script>
 
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 </body></html>
